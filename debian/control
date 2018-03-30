@@ -1,0 +1,13 @@
+Source: ros-lunar-agni-tf-tools
+Section: misc
+Priority: extra
+Maintainer: Robert Haschke <rhaschke@techfak.uni-bielefeld.de>
+Build-Depends: debhelper (>= 9.0.0), libeigen3-dev, ros-lunar-catkin, ros-lunar-roscpp, ros-lunar-rviz, ros-lunar-tf2-ros
+Homepage: http://wiki.ros.org/agni_tf_tools
+Standards-Version: 3.9.2
+
+Package: ros-lunar-agni-tf-tools
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-lunar-roscpp, ros-lunar-rviz, ros-lunar-tf2-ros
+Description: This package provides a gui program as well as a rviz plugin to publish static transforms.
+ Both support the transformation between various Euler angle representations. The rviz plugin also allows to configure the transform with an interactive marker.
