@@ -1,0 +1,8 @@
+ros-melodic-agni-tf-tools (0.1.1-0bionic) bionic; urgency=high
+
+  * install header files for rviz properties
+  * Contributors: Robert Haschke
+
+ -- Robert Haschke <rhaschke@techfak.uni-bielefeld.de>  Mon, 29 Oct 2018 23:00:00 -0000
+
+
