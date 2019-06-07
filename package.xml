@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>agni_tf_tools</name>
-  <version>0.1.1</version>
+  <version>0.1.2</version>
   <description>
   This package provides a gui program as well as a rviz plugin to publish static transforms.
   Both support the transformation between various Euler angle representations.
@@ -34,6 +34,7 @@
   <build_depend>roscpp</build_depend>
   <build_depend>tf2_ros</build_depend>
   <build_depend>rviz</build_depend>
+  <build_depend>qtbase5-dev</build_depend>
   <build_depend>eigen</build_depend>
 
   <!-- Use run_depend for packages you need at runtime: -->
