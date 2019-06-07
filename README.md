@@ -1,3 +1,26 @@
+## agni_tf_tools (kinetic) - 0.1.2-1
+
+The packages in the `agni_tf_tools` repository were released into the `kinetic` distro by running `/usr/bin/bloom-release --rosdistro kinetic --track kinetic agni_tf_tools` on `Fri, 07 Jun 2019 07:41:43 -0000`
+
+The `agni_tf_tools` package was released.
+
+Version of package(s) in repository `agni_tf_tools`:
+
+- upstream repository: https://github.com/ubi-agni/agni_tf_tools.git
+- release repository: https://github.com/ubi-agni-gbp/agni_tf_tools-release.git
+- rosdistro version: `0.1.1-0`
+- old version: `0.1.1-0`
+- new version: `0.1.2-1`
+
+Versions of tools used:
+
+- bloom version: `0.8.0`
+- catkin_pkg version: `0.4.12`
+- rosdep version: `0.15.2`
+- rosdistro version: `0.7.4`
+- vcstools version: `0.1.40`
+
+
 ## agni_tf_tools (lunar) - 0.1.2-1
 
 The packages in the `agni_tf_tools` repository were released into the `lunar` distro by running `/usr/bin/bloom-release --rosdistro lunar --track lunar agni_tf_tools --edit` on `Fri, 07 Jun 2019 07:31:42 -0000`
