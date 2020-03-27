@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.10.2)
 project(agni_tf_tools)
 
 ## Find catkin macros and libraries
@@ -6,13 +6,8 @@ project(agni_tf_tools)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED roscpp tf2_ros rviz)
 message(STATUS "Using Qt ${rviz_QT_VERSION}")
-if(rviz_QT_VERSION VERSION_LESS "5")
-	find_package(Qt4 ${rviz_QT_VERSION} REQUIRED QtCore QtGui)
-	include(${QT_USE_FILE})
-else()
-	find_package(Qt5 ${rviz_QT_VERSION} REQUIRED Core Widgets)
-	set(QT_LIBRARIES Qt5::Widgets)
-endif()
+find_package(Qt5 ${rviz_QT_VERSION} REQUIRED Core Widgets)
+set(QT_LIBRARIES Qt5::Widgets)
 find_package(Eigen3 REQUIRED)
 
 ## System dependencies are found with CMake's conventions
