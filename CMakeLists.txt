@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.0.2)
 project(agni_tf_tools)
 
 ## Find catkin macros and libraries
