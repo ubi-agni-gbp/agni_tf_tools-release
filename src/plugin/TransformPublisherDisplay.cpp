@@ -46,7 +46,6 @@
 #include <rviz/default_plugin/interactive_markers/interactive_marker.h>
 #include <interactive_markers/tools.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-#include <QDebug>
 
 namespace vm = visualization_msgs;
 const std::string MARKER_NAME = "marker";
@@ -94,10 +93,9 @@ TransformPublisherDisplay::TransformPublisherDisplay()
         "child frame", "", "", broadcast_property_,
         0, false, SLOT(onFramesChanged()), this);
 
-  connect(translation_property_, SIGNAL(changed()), this, SLOT(onTransformChanged()));
-  connect(rotation_property_, SIGNAL(quaternionChanged(Eigen::Quaterniond)), this, SLOT(onTransformChanged()));
-  connect(rotation_property_, SIGNAL(statusUpdate(int,QString,QString)),
-          this, SLOT(setStatus(int,QString,QString)));
+  connect(translation_property_, &rviz::Property::changed, this, &TransformPublisherDisplay::onTransformChanged);
+  connect(rotation_property_, &RotationProperty::quaternionChanged, this, &TransformPublisherDisplay::onTransformChanged);
+  connect(rotation_property_, &RotationProperty::statusUpdate, this, &TransformPublisherDisplay::setStatus);
   tf_pub_ = new TransformBroadcaster("", "", this);
   tf_pub_->setEnabled(false); // only enable with display
 
@@ -110,11 +108,11 @@ TransformPublisherDisplay::TransformPublisherDisplay()
 
   marker_scale_property_ = new rviz::FloatProperty("marker scale", 0.2, "", marker_property_,
                                                    SLOT(onMarkerScaleChanged()), this);
-  marker_property_->hide(); // only show when marker is created
 }
 
 TransformPublisherDisplay::~TransformPublisherDisplay()
 {
+  context_->getTF2BufferPtr()->removeTransformableCallback(tf_callback_handle_);
 }
 
 void TransformPublisherDisplay::onInitialize()
@@ -122,6 +120,8 @@ void TransformPublisherDisplay::onInitialize()
   Display::onInitialize();
   parent_frame_property_->setFrameManager(context_->getFrameManager());
   child_frame_property_->setFrameManager(context_->getFrameManager());
+  tf_callback_handle_ = context_->getTF2BufferPtr()->addTransformableCallback(
+        boost::bind(&TransformPublisherDisplay::onFramesChanged, this));
 
   // show some children by default
   this->expand();
@@ -136,6 +136,7 @@ void TransformPublisherDisplay::reset()
 void TransformPublisherDisplay::onEnable()
 {
   Display::onEnable();
+  onFramesChanged();
   onBroadcastEnableChanged();
 }
 
@@ -154,7 +155,7 @@ void TransformPublisherDisplay::update(float wall_dt, float ros_dt)
   // create marker if not yet done
   if (!imarker_ && marker_property_->getOptionInt() != NONE &&
       !createInteractiveMarker(marker_property_->getOptionInt()))
-    setStatusStd(StatusProperty::Warn, MARKER_NAME, "Waiting for tf");
+    setStatusStd(rviz::StatusProperty::Warn, MARKER_NAME, "Waiting for tf");
   else if (imarker_)
     imarker_->update(wall_dt); // get online marker updates
 }
@@ -259,10 +260,10 @@ bool TransformPublisherDisplay::createInteractiveMarker(int type)
   }
 
   imarker_.reset(new rviz::InteractiveMarker(getSceneNode(), context_));
-  connect(imarker_.get(), SIGNAL(userFeedback(visualization_msgs::InteractiveMarkerFeedback&)),
-          this, SLOT(onMarkerFeedback(visualization_msgs::InteractiveMarkerFeedback&)));
-  connect(imarker_.get(), SIGNAL(statusUpdate(StatusProperty::Level,std::string,std::string)),
-          this, SLOT(setStatusStd(StatusProperty::Level,std::string,std::string)));
+  connect(imarker_.get(), &rviz::InteractiveMarker::userFeedback,
+          this, &TransformPublisherDisplay::onMarkerFeedback);
+  connect(imarker_.get(), &rviz::InteractiveMarker::statusUpdate,
+          this, &TransformPublisherDisplay::setStatusStd);
 
   setStatusStd(rviz::StatusProperty::Ok, MARKER_NAME, "Ok");
 
@@ -274,7 +275,6 @@ bool TransformPublisherDisplay::createInteractiveMarker(int type)
   imarker_->setShowAxes(false);
   imarker_->setShowDescription(false);
 
-  marker_property_->show();
   return true;
 }
 
@@ -286,10 +286,14 @@ bool TransformPublisherDisplay::fillPoseStamped(std_msgs::Header &header,
   std::string error;
   if (context_->getFrameManager()->transformHasProblems(parent_frame, ros::Time(), error))
   {
-    setStatusStd(StatusProperty::Error, MARKER_NAME, error);
+    // on failure, listen to TF changes
+    auto tf = context_->getTF2BufferPtr();
+    tf->cancelTransformableRequest(tf_request_handle_);
+    tf_request_handle_ = tf->addTransformableRequest(tf_callback_handle_, fixed_frame_.toStdString(), parent_frame, ros::Time());
+    setStatusStd(rviz::StatusProperty::Error, MARKER_NAME, error);
     return false;
   }
-  setStatusStd(StatusProperty::Ok, MARKER_NAME, "");
+  setStatusStd(rviz::StatusProperty::Ok, MARKER_NAME, "");
 
   const Eigen::Quaterniond &q = rotation_property_->getQuaternion();
   const Ogre::Vector3 &p = translation_property_->getVector();
@@ -300,13 +304,13 @@ bool TransformPublisherDisplay::fillPoseStamped(std_msgs::Header &header,
   return true;
 }
 
-void TransformPublisherDisplay::setStatus(int level, const QString &name, const QString &text)
+void TransformPublisherDisplay::setStatus(rviz::StatusProperty::Level level, const QString &name, const QString &text)
 {
   if (level == rviz::StatusProperty::Ok && text.isEmpty()) {
-    Display::setStatus(static_cast<rviz::StatusProperty::Level>(level), name, text);
+    Display::setStatus(level, name, text);
     Display::deleteStatus(name);
   } else
-    Display::setStatus(static_cast<rviz::StatusProperty::Level>(level), name, text);
+    Display::setStatus(level, name, text);
 }
 
 void TransformPublisherDisplay::setStatusStd(rviz::StatusProperty::Level level,
@@ -357,7 +361,8 @@ void TransformPublisherDisplay::onFramesChanged()
 {
   // update marker pose
   vm::InteractiveMarkerPose marker_pose;
-  fillPoseStamped(marker_pose.header, marker_pose.pose);
+  if (!fillPoseStamped(marker_pose.header, marker_pose.pose))
+    return;
   if (imarker_) imarker_->processMessage(marker_pose);
 
   // prepare transform for broadcasting
@@ -376,7 +381,8 @@ void TransformPublisherDisplay::onTransformChanged()
   if (ignore_updates_) return;
 
   vm::InteractiveMarkerPose marker_pose;
-  fillPoseStamped(marker_pose.header, marker_pose.pose);
+  if (!fillPoseStamped(marker_pose.header, marker_pose.pose))
+    return;
 
   // update marker pose + broadcast pose
   ignore_updates_ = true;
