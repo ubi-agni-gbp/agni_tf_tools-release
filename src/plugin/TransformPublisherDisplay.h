@@ -36,6 +36,7 @@
 #include <visualization_msgs/InteractiveMarker.h>
 #include <visualization_msgs/InteractiveMarkerFeedback.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <tf2/buffer_core.h>
 
 // forward declarations of classes
 namespace rviz
@@ -55,8 +56,6 @@ class TransformBroadcaster;
 
 namespace agni_tf_tools
 {
-// needed because rviz::InteractiveMarker::statusUpdate is declared without rviz namespace
-using rviz::StatusProperty;
 
 class RotationProperty;
 
@@ -82,8 +81,8 @@ protected:
   bool fillPoseStamped(std_msgs::Header &header, geometry_msgs::Pose &pose);
 
 protected Q_SLOTS:
-  void setStatus(int level, const QString &name, const QString &text);
-  void setStatusStd(StatusProperty::Level, const std::string &name, const std::string &text);
+  void setStatus(rviz::StatusProperty::Level level, const QString &name, const QString &text) override;
+  void setStatusStd(rviz::StatusProperty::Level, const std::string &name, const std::string &text);
   void onRefFrameChanged();
   void onAdaptTransformChanged();
   void onFramesChanged();
@@ -107,6 +106,8 @@ private:
 
   // tf publisher
   TransformBroadcaster *tf_pub_;
+  tf2::TransformableCallbackHandle tf_callback_handle_;
+  tf2::TransformableRequestHandle tf_request_handle_;
 
   // interactive marker stuff
   boost::shared_ptr<rviz::InteractiveMarker> imarker_;
