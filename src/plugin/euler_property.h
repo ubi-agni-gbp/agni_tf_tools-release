@@ -35,12 +35,13 @@
 #include <Eigen/Geometry>
 #include <stdexcept>
 
-#include "rviz/properties/property.h"
+#include <rviz/properties/property.h>
+#include <rviz/properties/status_property.h>
 
 namespace rviz
 {
 
-class FloatProperty;
+class SpinBoxFloatProperty;
 
 class EulerProperty: public Property
 {
@@ -87,7 +88,7 @@ Q_SIGNALS:
   /** signal emitted when quaternion value has changed */
   void quaternionChanged(Eigen::Quaterniond q);
   /** signal emitted when there was an error, e.g. with Euler axes */
-  void statusUpdate(int, const QString&, const QString&);
+  void statusUpdate(rviz::StatusProperty::Level, const QString&, const QString&);
 
 private:
   void updateAngles(const Eigen::Quaterniond &q);
@@ -97,7 +98,7 @@ private:
   QString   axes_string_;
   uint      axes_[3]; // unit axis index for i-th rotation
   bool      fixed_;
-  FloatProperty* euler_[3];
+  SpinBoxFloatProperty* euler_[3];
   bool ignore_child_updates_;
   bool angles_read_only_;
   bool update_string_; // do we have any changes triggering an updateString()?
