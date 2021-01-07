@@ -1,0 +1,46 @@
+ros-noetic-agni-tf-tools (0.1.5-1buster) buster; urgency=high
+
+  * Replace string-based SIGNALs with function pointers
+  * Always show marker type property
+  * EulerProperty: use QDoubleSpinBoxes (allowing animated motion)
+  * Display: Fix several issues with frame updates
+    * Always consider return value of fillPoseStamped() and don't publish on failure
+    * On failure, register to TF changes to retry later
+    * Finish tf2 transition: use tf2::BufferCore instead of tf::Transformer
+  * Handle multiple TransformBroadcasters in the same ROS node.
+  * Contributors: Robert Haschke
+
+ -- Robert Haschke <rhaschke@techfak.uni-bielefeld.de>  Tue, 14 Apr 2020 22:00:00 -0000
+
+ros-noetic-agni-tf-tools (0.1.4-1buster) buster; urgency=high
+
+  * migration to tf2
+  * modernize code
+  * Contributors: Robert Haschke
+
+ -- Robert Haschke <rhaschke@techfak.uni-bielefeld.de>  Thu, 26 Mar 2020 23:00:00 -0000
+
+ros-noetic-agni-tf-tools (0.1.3-1buster) buster; urgency=high
+
+  * remove superfluous marker_node_
+  * avoid spurious tf messages when display was saved in disabled state
+  * Contributors: Robert Haschke
+
+ -- Robert Haschke <rhaschke@techfak.uni-bielefeld.de>  Thu, 26 Mar 2020 23:00:00 -0000
+
+ros-noetic-agni-tf-tools (0.1.2-1buster) buster; urgency=high
+
+  * fix compiler warnings
+  * cmake: cleanup, correctly announce exported lib
+  * Contributors: Robert Haschke
+
+ -- Robert Haschke <rhaschke@techfak.uni-bielefeld.de>  Thu, 06 Jun 2019 22:00:00 -0000
+
+ros-noetic-agni-tf-tools (0.1.1-1buster) buster; urgency=high
+
+  * install header files for rviz properties
+  * Contributors: Robert Haschke
+
+ -- Robert Haschke <rhaschke@techfak.uni-bielefeld.de>  Mon, 29 Oct 2018 23:00:00 -0000
+
+
