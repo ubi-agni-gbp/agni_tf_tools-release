@@ -20,12 +20,12 @@ find_package(Eigen3 REQUIRED)
 ## System dependencies are found with CMake's conventions
 find_package(Boost REQUIRED COMPONENTS program_options)
 
-include_directories(${EIGEN3_INCLUDE_DIRS} ${BOOST_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
+include_directories(SYSTEM ${EIGEN3_INCLUDE_DIRS} ${BOOST_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES agni_tf_tools
-#  CATKIN_DEPENDS tf2_geometry_msgs
+CATKIN_DEPENDS roscpp rviz
 #  DEPENDS system_lib
 )
 
