@@ -40,34 +40,33 @@
 #include <rviz/properties/status_property.h>
 #include "euler_property.h"
 
-namespace agni_tf_tools
-{
+namespace agni_tf_tools {
 
-class RotationProperty: public rviz::StringProperty
+class RotationProperty : public rviz::StringProperty
 {
-Q_OBJECT
+  Q_OBJECT
 public:
-  RotationProperty(Property* parent = 0,
+  RotationProperty(Property* parent = nullptr,
                    const QString& name = QString(),
                    const Eigen::Quaterniond& value = Eigen::Quaterniond::Identity(),
-                   const char *changed_slot = 0,
-                   QObject* receiver = 0);
+                   const char* changed_slot = nullptr,
+                   QObject* receiver = nullptr);
 
   Eigen::Quaterniond getQuaternion() const;
-  virtual bool setValue(const QVariant& value);
+  bool setValue(const QVariant& value) override;
 
   /** @brief Load the value of this property and/or its children from the given Config node. */
-  virtual void load(const rviz::Config& config);
-  virtual void save(rviz::Config config) const;
+  void load(const rviz::Config& config) override;
+  void save(rviz::Config config) const override;
 
   /** @brief Overridden from Property to propagate read-only-ness to children. */
-  virtual void setReadOnly(bool read_only);
+  void setReadOnly(bool read_only) override;
 
 public Q_SLOTS:
-  void setQuaternion(const Eigen::Quaterniond &q);
+  void setQuaternion(const Eigen::Quaterniond& q);
   void setEulerAngles(double euler[3], bool normalize);
   void setEulerAngles(double e1, double e2, double e3, bool normalize);
-  void setEulerAxes(const QString &axes);
+  void setEulerAxes(const QString& axes);
 
 private Q_SLOTS:
   void updateFromEuler();
@@ -82,8 +81,8 @@ Q_SIGNALS:
 private:
   void updateString();
 
-  rviz::EulerProperty *euler_property_;
-  rviz::QuaternionProperty *quaternion_property_;
+  rviz::EulerProperty* euler_property_;
+  rviz::QuaternionProperty* quaternion_property_;
   bool ignore_quaternion_property_updates_;
   bool show_euler_string_;
 };
