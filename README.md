@@ -1,3 +1,26 @@
+## agni_tf_tools (noetic) - 0.1.6-1
+
+The packages in the `agni_tf_tools` repository were released into the `noetic` distro by running `/usr/bin/bloom-release --ros-distro noetic agni_tf_tools` on `Wed, 14 Jul 2021 10:43:34 -0000`
+
+The `agni_tf_tools` package was released.
+
+Version of package(s) in repository `agni_tf_tools`:
+
+- upstream repository: https://github.com/ubi-agni/agni_tf_tools.git
+- release repository: https://github.com/ubi-agni-gbp/agni_tf_tools-release.git
+- rosdistro version: `0.1.5-1`
+- old version: `0.1.5-1`
+- new version: `0.1.6-1`
+
+Versions of tools used:
+
+- bloom version: `0.10.7`
+- catkin_pkg version: `0.4.23`
+- rosdep version: `0.21.0`
+- rosdistro version: `0.8.3`
+- vcstools version: `0.1.42`
+
+
 ## agni_tf_tools (melodic) - 0.1.6-1
 
 The packages in the `agni_tf_tools` repository were released into the `melodic` distro by running `/usr/bin/bloom-release --ros-distro melodic agni_tf_tools` on `Wed, 14 Jul 2021 10:40:37 -0000`
